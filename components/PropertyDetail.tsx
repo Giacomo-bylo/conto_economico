@@ -271,6 +271,22 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     }
   };
 
+  // Formatta numero per input (con punti delle migliaia)
+  const formatInputNumber = (value: number | string): string => {
+    if (value === '' || value === null || value === undefined) return '';
+    const num = typeof value === 'string' ? parseFloat(value.replace(/\./g, '')) : value;
+    if (isNaN(num)) return '';
+    return num.toLocaleString('it-IT');
+  };
+
+  // Estrae numero da stringa formattata
+  const parseInputNumber = (value: string): number => {
+    if (!value) return 0;
+    const cleaned = value.replace(/\./g, '').replace(/,/g, '.');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-8 border border-slate-200">
@@ -311,40 +327,40 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Agent Pricing Min</label>
                 <input 
-                  type="number" 
-                  value={localProperty.avm_agent_pricing_min || ''} 
-                  onChange={(e) => handleFieldChange('avm_agent_pricing_min', parseFloat(e.target.value) || 0)} 
-                  placeholder="Es. 300000"
+                  type="text" 
+                  value={formatInputNumber(localProperty.avm_agent_pricing_min)} 
+                  onChange={(e) => handleFieldChange('avm_agent_pricing_min', parseInputNumber(e.target.value))} 
+                  placeholder="Es. 300.000"
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
                 />
               </div>
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Agent Pricing Max</label>
                 <input 
-                  type="number" 
-                  value={localProperty.avm_agent_pricing_max || ''} 
-                  onChange={(e) => handleFieldChange('avm_agent_pricing_max', parseFloat(e.target.value) || 0)} 
-                  placeholder="Es. 320000"
+                  type="text" 
+                  value={formatInputNumber(localProperty.avm_agent_pricing_max)} 
+                  onChange={(e) => handleFieldChange('avm_agent_pricing_max', parseInputNumber(e.target.value))} 
+                  placeholder="Es. 320.000"
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
                 />
               </div>
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Immobiliare Insights Min</label>
                 <input 
-                  type="number" 
-                  value={localProperty.avm_immobiliare_insights_min || ''} 
-                  onChange={(e) => handleFieldChange('avm_immobiliare_insights_min', parseFloat(e.target.value) || 0)} 
-                  placeholder="Es. 290000"
+                  type="text" 
+                  value={formatInputNumber(localProperty.avm_immobiliare_insights_min)} 
+                  onChange={(e) => handleFieldChange('avm_immobiliare_insights_min', parseInputNumber(e.target.value))} 
+                  placeholder="Es. 290.000"
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
                 />
               </div>
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Immobiliare Insights Max</label>
                 <input 
-                  type="number" 
-                  value={localProperty.avm_immobiliare_insights_max || ''} 
-                  onChange={(e) => handleFieldChange('avm_immobiliare_insights_max', parseFloat(e.target.value) || 0)} 
-                  placeholder="Es. 310000"
+                  type="text" 
+                  value={formatInputNumber(localProperty.avm_immobiliare_insights_max)} 
+                  onChange={(e) => handleFieldChange('avm_immobiliare_insights_max', parseInputNumber(e.target.value))} 
+                  placeholder="Es. 310.000"
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
                 />
               </div>
@@ -372,85 +388,85 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Ristrutturazione</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.ristrutturazione_per_mq}€/m²</span>
-                  <input type="number" value={editableCosts.costo_ristrutturazione} onChange={(e) => handleCostChange('costo_ristrutturazione', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_ristrutturazione)} onChange={(e) => handleCostChange('costo_ristrutturazione', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Studio Tecnico */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Studio Tecnico</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.studio_tecnico}€</span>
-                  <input type="number" value={editableCosts.costo_studio_tecnico} onChange={(e) => handleCostChange('costo_studio_tecnico', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_studio_tecnico)} onChange={(e) => handleCostChange('costo_studio_tecnico', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Architetto */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Architetto</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.architetto}€</span>
-                  <input type="number" value={editableCosts.costo_architetto} onChange={(e) => handleCostChange('costo_architetto', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_architetto)} onChange={(e) => handleCostChange('costo_architetto', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Imposte */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Imposte</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.imposte_percentuale}% + {params.imposte_fisso}€</span>
-                  <input type="number" value={editableCosts.costo_imposte} onChange={(e) => handleCostChange('costo_imposte', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_imposte)} onChange={(e) => handleCostChange('costo_imposte', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Notaio */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Notaio</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.notaio}€</span>
-                  <input type="number" value={editableCosts.costo_notaio} onChange={(e) => handleCostChange('costo_notaio', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_notaio)} onChange={(e) => handleCostChange('costo_notaio', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Avvocato */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Avvocato</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.avvocato}€</span>
-                  <input type="number" value={editableCosts.costo_avvocato} onChange={(e) => handleCostChange('costo_avvocato', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_avvocato)} onChange={(e) => handleCostChange('costo_avvocato', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Agibilità */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Agibilità</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.agibilita}€</span>
-                  <input type="number" value={editableCosts.costo_agibilita} onChange={(e) => handleCostChange('costo_agibilita', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_agibilita)} onChange={(e) => handleCostChange('costo_agibilita', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Cambio Destinazione */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Cambio Destinazione</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.cambio_destinazione_uso}€</span>
-                  <input type="number" value={editableCosts.costo_cambio_destinazione} onChange={(e) => handleCostChange('costo_cambio_destinazione', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_cambio_destinazione)} onChange={(e) => handleCostChange('costo_cambio_destinazione', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Agenzia Out */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Agenzia Out</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.agenzia_out_percentuale}%</span>
-                  <input type="number" value={editableCosts.costo_agenzia_out} onChange={(e) => handleCostChange('costo_agenzia_out', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_agenzia_out)} onChange={(e) => handleCostChange('costo_agenzia_out', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Condominio Risc. */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Condominio Risc.</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.condominio_risc}€</span>
-                  <input type="number" value={editableCosts.costo_condominio_risc} onChange={(e) => handleCostChange('costo_condominio_risc', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_condominio_risc)} onChange={(e) => handleCostChange('costo_condominio_risc', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Pulizia Cantiere */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Pulizia Cantiere</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.pulizia_cantiere}€</span>
-                  <input type="number" value={editableCosts.costo_pulizia_cantiere} onChange={(e) => handleCostChange('costo_pulizia_cantiere', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_pulizia_cantiere)} onChange={(e) => handleCostChange('costo_pulizia_cantiere', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Utenze */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Utenze</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.utenze}€</span>
-                  <input type="number" value={editableCosts.costo_utenze} onChange={(e) => handleCostChange('costo_utenze', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_utenze)} onChange={(e) => handleCostChange('costo_utenze', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Imprevisti */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Imprevisti</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">{params.imprevisti_percentuale}%</span>
-                  <input type="number" value={editableCosts.costo_imprevisti} onChange={(e) => handleCostChange('costo_imprevisti', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_imprevisti)} onChange={(e) => handleCostChange('costo_imprevisti', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Altro */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Altro</span></div>
                   <span className="text-xs text-slate-400 w-32 text-right">0€</span>
-                  <input type="number" value={editableCosts.costo_altro} onChange={(e) => handleCostChange('costo_altro', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                  <input type="text" value={formatInputNumber(editableCosts.costo_altro)} onChange={(e) => handleCostChange('costo_altro', parseInputNumber(e.target.value))} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
               </div>
 
@@ -482,7 +498,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
               <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-200">
                 <div>
                   <label className="block text-xs text-slate-600 mb-1">Esposizione (€)</label>
-                  <input type="number" value={editableCosts.esposizione} onChange={(e) => handleCostChange('esposizione', parseFloat(e.target.value) || 0)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" />
+                  <input type="text" value={formatInputNumber(editableCosts.esposizione)} onChange={(e) => handleCostChange('esposizione', parseInputNumber(e.target.value))} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" />
                 </div>
                 <div>
                   <label className="block text-xs text-slate-600 mb-1">ROI Target (%)</label>
