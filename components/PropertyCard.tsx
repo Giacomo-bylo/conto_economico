@@ -1,6 +1,5 @@
 import React from 'react';
 import { Property } from '../types';
-import { X } from 'lucide-react';
 
 interface PropertyCardProps {
   property: Property;
@@ -16,20 +15,37 @@ export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps)
     }
   };
 
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return { label: 'Approvato', bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200' };
+      case 'rejected':
+        return { label: 'Rifiutato', bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' };
+      default:
+        return { label: 'In Approvazione', bg: 'bg-yellow-100', text: 'text-yellow-700', border: 'border-yellow-200' };
+    }
+  };
+
+  const statusConfig = getStatusConfig(property.status);
+
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 cursor-pointer hover:shadow-md transition-all relative group"
+      className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 cursor-pointer hover:shadow-md transition-all relative"
     >
-      <button
-        onClick={handleDelete}
-        className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-red-50 text-red-600 opacity-0 group-hover:opacity-100 hover:bg-red-100 transition-all"
-        title="Elimina valutazione"
-      >
-        <X size={18} />
-      </button>
+      <div className="flex items-start justify-between mb-4">
+        <div className={`px-3 py-1 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
+          {statusConfig.label}
+        </div>
+        <button
+          onClick={handleDelete}
+          className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition-colors"
+        >
+          ELIMINA
+        </button>
+      </div>
 
-      <div className="grid grid-cols-6 gap-4 pr-8">
+      <div className="grid grid-cols-6 gap-4">
         <div>
           <p className="text-xs text-slate-500 mb-1">Cliente</p>
           <p className="font-semibold text-slate-900">
