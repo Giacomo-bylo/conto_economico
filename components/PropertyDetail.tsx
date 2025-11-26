@@ -94,26 +94,70 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
 
   const saveChanges = useCallback(async () => {
     setSaving(true);
+    
+    // IMPORTANTE: Salviamo SOLO i campi che esistono nel database
+    // NON salviamo i valori calcolati con nomi diversi (es. roi_target)
     const updates = {
-      ...calculated,
+      // Valori AVM (modificabili dall'utente)
       avm_agent_pricing_min: localProperty.avm_agent_pricing_min,
       avm_agent_pricing_max: localProperty.avm_agent_pricing_max,
       avm_immobiliare_insights_min: localProperty.avm_immobiliare_insights_min,
       avm_immobiliare_insights_max: localProperty.avm_immobiliare_insights_max,
+      
+      // Costi modificabili
+      costo_ristrutturazione: calculated.costo_ristrutturazione,
+      costo_studio_tecnico: calculated.costo_studio_tecnico,
+      costo_architetto: calculated.costo_architetto,
+      costo_imposte: calculated.costo_imposte,
+      costo_notaio: calculated.costo_notaio,
+      costo_avvocato: calculated.costo_avvocato,
+      costo_agibilita: calculated.costo_agibilita,
+      costo_cambio_destinazione: calculated.costo_cambio_destinazione,
+      costo_agenzia_out: calculated.costo_agenzia_out,
+      costo_condominio_risc: calculated.costo_condominio_risc,
+      costo_pulizia_cantiere: calculated.costo_pulizia_cantiere,
+      costo_utenze: calculated.costo_utenze,
+      costo_imprevisti: calculated.costo_imprevisti,
+      costo_altro: calculated.costo_altro,
+      
+      // Valori calcolati da salvare
+      prezzo_riferimento: calculated.prezzo_riferimento,
+      prezzo_rivendita: calculated.prezzo_rivendita,
+      totale_costi_escluso_acquisto: calculated.totale_costi_escluso_acquisto,
+      totale_costi: calculated.totale_costi,
+      totale_rivendita: calculated.totale_rivendita,
+      prezzo_acquisto: calculated.prezzo_acquisto,
+      prezzo_acquisto_meno_5: calculated.prezzo_acquisto_meno_5,
+      utile_lordo: calculated.utile_lordo,
+      
+      // Parametri operativi (nota: roi_target nel frontend, ma 'roi' nel DB)
+      esposizione: calculated.esposizione,
+      roi: calculated.roi_target,
+      roe: calculated.roe,
     };
 
-    const { error } = await supabase.from('properties').update(updates).eq('id', localProperty.id);
+    console.log('Saving updates:', updates);
 
-    if (!error) {
-      const updated = { ...localProperty, ...updates };
-      setLocalProperty(updated);
-      onUpdate(updated);
-      alert('Modifiche salvate!');
-    } else {
-      console.error("Error saving property:", error);
-      alert("Errore durante il salvataggio.");
-    }
+    const { data, error } = await supabase
+      .from('properties')
+      .update(updates)
+      .eq('id', localProperty.id)
+      .select()
+      .single();
+
     setSaving(false);
+
+    if (error) {
+      console.error("Error saving property:", error);
+      alert(`Errore durante il salvataggio: ${error.message}`);
+      throw error;
+    }
+
+    const updated = { ...localProperty, ...updates };
+    setLocalProperty(updated);
+    onUpdate(updated);
+    console.log('Saved successfully:', data);
+    return updated;
   }, [localProperty, calculated, onUpdate]);
 
   const handleApprove = useCallback(async () => {
@@ -121,11 +165,13 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     
     setSaving(true);
     
-    // Prima salviamo le modifiche
-    await saveChanges();
-    
     try {
-      // Poi chiamiamo l'API che aggiorna lo stato E invia l'email
+      // Prima salviamo le modifiche e aspettiamo che finiscano
+      console.log('Step 1: Saving changes...');
+      const savedData = await saveChanges();
+      console.log('Step 2: Changes saved, now approving with data:', savedData);
+      
+      // Poi chiamiamo l'API passando i dati già calcolati
       const response = await fetch('/api/approve', {
         method: 'POST',
         headers: {
@@ -133,11 +179,22 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
         },
         body: JSON.stringify({
           propertyId: localProperty.id,
-          status: 'approved'
+          status: 'approved',
+          // Passiamo i dati per l'email
+          emailData: {
+            lead_email: localProperty.lead_email,
+            lead_nome: localProperty.lead_nome,
+            indirizzo: localProperty.indirizzo_completo,
+            tipo_immobile: localProperty.tipo_immobile || 'Non specificato',
+            superficie_mq: localProperty.superficie_mq,
+            prezzo_acquisto_min: Math.max(0, Math.round(calculated.prezzo_acquisto_meno_5)),
+            prezzo_acquisto_max: Math.max(0, Math.round(calculated.prezzo_acquisto))
+          }
         }),
       });
 
       const result = await response.json();
+      console.log('Step 3: Approval response:', result);
 
       if (!response.ok) {
         throw new Error(result.error || 'Errore durante l\'approvazione');
@@ -154,7 +211,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     } finally {
       setSaving(false);
     }
-  }, [localProperty, saveChanges, onUpdate, onClose]);
+  }, [localProperty, calculated, saveChanges, onUpdate, onClose]);
 
   const handleReject = useCallback(async () => {
     if (!confirm('Confermi di voler rifiutare questa valutazione? Verrà inviata l\'email al cliente.')) return;
@@ -169,7 +226,17 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
         },
         body: JSON.stringify({
           propertyId: localProperty.id,
-          status: 'rejected'
+          status: 'rejected',
+          // Passiamo i dati per l'email
+          emailData: {
+            lead_email: localProperty.lead_email,
+            lead_nome: localProperty.lead_nome,
+            indirizzo: localProperty.indirizzo_completo,
+            tipo_immobile: localProperty.tipo_immobile || 'Non specificato',
+            superficie_mq: localProperty.superficie_mq,
+            prezzo_acquisto_min: 0,
+            prezzo_acquisto_max: 0
+          }
         }),
       });
 
@@ -353,17 +420,28 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
 
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t border-slate-200">
-            <button onClick={saveChanges} disabled={saving} className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
+            <button 
+              onClick={async () => {
+                try {
+                  await saveChanges();
+                  alert('✅ Modifiche salvate con successo!');
+                } catch (error) {
+                  // L'errore è già gestito in saveChanges
+                }
+              }} 
+              disabled={saving} 
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
+            >
               <Save size={20} />
-              Salva Modifiche
+              {saving ? 'Salvataggio...' : 'Salva Modifiche'}
             </button>
             <button onClick={handleApprove} disabled={saving} className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
               <Check size={20} />
-              Approva
+              {saving ? 'Approvazione...' : 'Approva'}
             </button>
             <button onClick={handleReject} disabled={saving} className="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
               <XCircle size={20} />
-              Rifiuta
+              {saving ? 'Rifiuto...' : 'Rifiuta'}
             </button>
           </div>
         </div>
