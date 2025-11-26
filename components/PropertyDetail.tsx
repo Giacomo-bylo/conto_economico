@@ -187,8 +187,8 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
             indirizzo: localProperty.indirizzo_completo,
             tipo_immobile: localProperty.tipo_immobile || 'Non specificato',
             superficie_mq: localProperty.superficie_mq,
-            prezzo_acquisto_min: Math.max(0, Math.round(calculated.prezzo_acquisto_meno_5)),
-            prezzo_acquisto_max: Math.max(0, Math.round(calculated.prezzo_acquisto))
+            prezzo_acquisto_min: Math.max(0, roundToThousand(calculated.prezzo_acquisto_meno_5)),
+            prezzo_acquisto_max: Math.max(0, roundToThousand(calculated.prezzo_acquisto))
           }
         }),
       });
@@ -261,20 +261,32 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
 
   const formatCurrency = (value: number) => `€${Math.round(value).toLocaleString('it-IT')}`;
 
-  const CostRow = ({ label, baseValue, editableField }: { label: string; baseValue: string; editableField: keyof typeof editableCosts }) => (
-    <div className="flex items-center gap-3">
-      <div className="flex-1">
-        <span className="text-sm text-slate-600">{label}</span>
+  // Arrotonda alle migliaia: se >= 500, arrotonda su, altrimenti giù
+  const roundToThousand = (value: number) => {
+    const hundreds = value % 1000;
+    if (hundreds >= 500) {
+      return Math.ceil(value / 1000) * 1000;
+    } else {
+      return Math.floor(value / 1000) * 1000;
+    }
+  };
+
+  const CostRow = useMemo(() => {
+    return ({ label, baseValue, editableField }: { label: string; baseValue: string; editableField: keyof typeof editableCosts }) => (
+      <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <span className="text-sm text-slate-600">{label}</span>
+        </div>
+        <span className="text-xs text-slate-400 w-32 text-right">{baseValue}</span>
+        <input
+          type="number"
+          value={editableCosts[editableField]}
+          onChange={(e) => handleCostChange(editableField, parseFloat(e.target.value) || 0)}
+          className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium"
+        />
       </div>
-      <span className="text-xs text-slate-400 w-32 text-right">{baseValue}</span>
-      <input
-        type="number"
-        value={editableCosts[editableField]}
-        onChange={(e) => handleCostChange(editableField, parseFloat(e.target.value) || 0)}
-        className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium"
-      />
-    </div>
-  );
+    );
+  }, [editableCosts, handleCostChange]);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto backdrop-blur-sm">
@@ -315,19 +327,43 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Agent Pricing Min</label>
-                <input type="number" value={localProperty.avm_agent_pricing_min || 0} onChange={(e) => handleFieldChange('avm_agent_pricing_min', parseFloat(e.target.value) || 0)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input 
+                  type="number" 
+                  value={localProperty.avm_agent_pricing_min || ''} 
+                  onChange={(e) => handleFieldChange('avm_agent_pricing_min', parseFloat(e.target.value) || 0)} 
+                  placeholder="Es. 300000"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
               </div>
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Agent Pricing Max</label>
-                <input type="number" value={localProperty.avm_agent_pricing_max || 0} onChange={(e) => handleFieldChange('avm_agent_pricing_max', parseFloat(e.target.value) || 0)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input 
+                  type="number" 
+                  value={localProperty.avm_agent_pricing_max || ''} 
+                  onChange={(e) => handleFieldChange('avm_agent_pricing_max', parseFloat(e.target.value) || 0)} 
+                  placeholder="Es. 320000"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
               </div>
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Immobiliare Insights Min</label>
-                <input type="number" value={localProperty.avm_immobiliare_insights_min || 0} onChange={(e) => handleFieldChange('avm_immobiliare_insights_min', parseFloat(e.target.value) || 0)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input 
+                  type="number" 
+                  value={localProperty.avm_immobiliare_insights_min || ''} 
+                  onChange={(e) => handleFieldChange('avm_immobiliare_insights_min', parseFloat(e.target.value) || 0)} 
+                  placeholder="Es. 290000"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
               </div>
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Immobiliare Insights Max</label>
-                <input type="number" value={localProperty.avm_immobiliare_insights_max || 0} onChange={(e) => handleFieldChange('avm_immobiliare_insights_max', parseFloat(e.target.value) || 0)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input 
+                  type="number" 
+                  value={localProperty.avm_immobiliare_insights_max || ''} 
+                  onChange={(e) => handleFieldChange('avm_immobiliare_insights_max', parseFloat(e.target.value) || 0)} 
+                  placeholder="Es. 310000"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
               </div>
             </div>
             
@@ -413,7 +449,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
             <div className="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center">
               <div className="text-sm text-slate-600 mb-2">Range Offerta</div>
               <div className="text-3xl font-bold text-blue-600">
-                {formatCurrency(calculated.prezzo_acquisto_meno_5)} - {formatCurrency(calculated.prezzo_acquisto)}
+                {formatCurrency(roundToThousand(calculated.prezzo_acquisto_meno_5))} - {formatCurrency(roundToThousand(calculated.prezzo_acquisto))}
               </div>
             </div>
           </div>
