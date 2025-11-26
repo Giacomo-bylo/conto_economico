@@ -7,6 +7,11 @@ const n8nWebhookUrl = 'https://n8n.bylo.it/webhook/bylo-notification';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Funzione per formattare con punto delle migliaia
+const formatWithThousands = (value: number): string => {
+  return value.toLocaleString('it-IT');
+};
+
 // Funzione helper per aspettare
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -121,8 +126,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // 3. Prepara i dati per n8n
     console.log('Step 3: Preparing webhook data...');
-    const prezzoMin = Math.max(0, Math.round(property.prezzo_acquisto_meno_5 || 0));
-    const prezzoMax = Math.max(0, Math.round(property.prezzo_acquisto || 0));
+    
+    // I prezzi nel DB sono GIÀ arrotondati alle migliaia
+    // Li formattiamo solo con i punti separatori
+    const prezzoMin = Math.max(0, property.prezzo_acquisto_meno_5 || 0);
+    const prezzoMax = Math.max(0, property.prezzo_acquisto || 0);
     
     const webhookData = {
       status,
@@ -131,8 +139,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       indirizzo: property.indirizzo_completo,
       tipo_immobile: property.tipo_immobile || 'Non specificato',
       superficie_mq: property.superficie_mq,
-      prezzo_acquisto_min: prezzoMin,
-      prezzo_acquisto_max: prezzoMax
+      prezzo_acquisto_min: formatWithThousands(prezzoMin),
+      prezzo_acquisto_max: formatWithThousands(prezzoMax)
     };
 
     console.log('Webhook data:', webhookData);

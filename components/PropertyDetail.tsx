@@ -127,8 +127,11 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
       totale_costi_escluso_acquisto: calculated.totale_costi_escluso_acquisto,
       totale_costi: calculated.totale_costi,
       totale_rivendita: calculated.totale_rivendita,
-      prezzo_acquisto: calculated.prezzo_acquisto,
-      prezzo_acquisto_meno_5: calculated.prezzo_acquisto_meno_5,
+      
+      // PREZZI ARROTONDATI ALLE MIGLIAIA (fonte di verità per email)
+      prezzo_acquisto: roundToThousand(calculated.prezzo_acquisto),
+      prezzo_acquisto_meno_5: roundToThousand(calculated.prezzo_acquisto_meno_5),
+      
       utile_lordo: calculated.utile_lordo,
       
       // Parametri operativi (nota: roi_target nel frontend, ma 'roi' nel DB)
