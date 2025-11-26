@@ -271,24 +271,273 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     }
   };
 
-  const CostRow = useMemo(() => {
-    return ({ label, baseValue, editableField }: { label: string; baseValue: string; editableField: keyof typeof editableCosts }) => (
-      <div className="flex items-center gap-3">
-        <div className="flex-1">
-          <span className="text-sm text-slate-600">{label}</span>
-        </div>
-        <span className="text-xs text-slate-400 w-32 text-right">{baseValue}</span>
-        <input
-          type="number"
-          value={editableCosts[editableField]}
-          onChange={(e) => handleCostChange(editableField, parseFloat(e.target.value) || 0)}
-          className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium"
-        />
-      </div>
-    );
-  }, [editableCosts, handleCostChange]);
-
   return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-8 border border-slate-200">
+        <div className="flex items-center justify-between p-6 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">
+              {localProperty.lead_nome} {localProperty.lead_cognome}
+            </h2>
+            <p className="text-slate-600 mt-1">{localProperty.indirizzo_completo} {localProperty.numero_civico}</p>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition">
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+          {/* Dati Immobile */}
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-3 text-lg">🏠 Dati Immobile</h3>
+            <div className="grid grid-cols-5 gap-3 text-sm bg-slate-50 p-4 rounded-lg">
+              <div><span className="text-slate-500 text-xs">Tipologia</span><p className="font-medium">{localProperty.tipo_immobile || '-'}</p></div>
+              <div><span className="text-slate-500 text-xs">Superficie</span><p className="font-medium">{localProperty.superficie_mq} m²</p></div>
+              <div><span className="text-slate-500 text-xs">Locali</span><p className="font-medium">{localProperty.numero_locali || '-'}</p></div>
+              <div><span className="text-slate-500 text-xs">Bagni</span><p className="font-medium">{localProperty.numero_bagni || '-'}</p></div>
+              <div><span className="text-slate-500 text-xs">Piano</span><p className="font-medium">{localProperty.piano_immobile || '-'}</p></div>
+              <div><span className="text-slate-500 text-xs">Ascensore</span><p className="font-medium">{localProperty.ascensore || '-'}</p></div>
+              <div><span className="text-slate-500 text-xs">Anno</span><p className="font-medium">{localProperty.anno_costruzione || '-'}</p></div>
+              <div><span className="text-slate-500 text-xs">Condizioni</span><p className="font-medium">{localProperty.condizioni_immobile || '-'}</p></div>
+              <div><span className="text-slate-500 text-xs">Aree esterne</span><p className="font-medium">{localProperty.aree_esterne || '-'}</p></div>
+              <div><span className="text-slate-500 text-xs">Pertinenze</span><p className="font-medium">{localProperty.pertinenze || '-'}</p></div>
+            </div>
+          </div>
+
+          {/* AVM */}
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-3 text-lg">📊 Valutazioni AVM</h3>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm text-slate-600 mb-1">Agent Pricing Min</label>
+                <input 
+                  type="number" 
+                  value={localProperty.avm_agent_pricing_min || ''} 
+                  onChange={(e) => handleFieldChange('avm_agent_pricing_min', parseFloat(e.target.value) || 0)} 
+                  placeholder="Es. 300000"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-slate-600 mb-1">Agent Pricing Max</label>
+                <input 
+                  type="number" 
+                  value={localProperty.avm_agent_pricing_max || ''} 
+                  onChange={(e) => handleFieldChange('avm_agent_pricing_max', parseFloat(e.target.value) || 0)} 
+                  placeholder="Es. 320000"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-slate-600 mb-1">Immobiliare Insights Min</label>
+                <input 
+                  type="number" 
+                  value={localProperty.avm_immobiliare_insights_min || ''} 
+                  onChange={(e) => handleFieldChange('avm_immobiliare_insights_min', parseFloat(e.target.value) || 0)} 
+                  placeholder="Es. 290000"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-slate-600 mb-1">Immobiliare Insights Max</label>
+                <input 
+                  type="number" 
+                  value={localProperty.avm_immobiliare_insights_max || ''} 
+                  onChange={(e) => handleFieldChange('avm_immobiliare_insights_max', parseFloat(e.target.value) || 0)} 
+                  placeholder="Es. 310000"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
+              </div>
+            </div>
+            
+            {/* Prezzo Riferimento e Rivendita */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-blue-50 border-2 border-blue-500 rounded-lg p-4 text-center">
+                <div className="text-xs text-slate-600">Prezzo Riferimento</div>
+                <div className="text-xl font-bold text-blue-600">{formatCurrency(calculated.prezzo_riferimento)}</div>
+              </div>
+              <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4 text-center">
+                <div className="text-xs text-slate-600">Prezzo Rivendita</div>
+                <div className="text-xl font-bold text-green-600">{formatCurrency(calculated.prezzo_rivendita)}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* CONTO ECONOMICO Unificato */}
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-3 text-lg">💶 Conto Economico</h3>
+            <div className="bg-slate-50 rounded-lg p-4 space-y-3 border border-slate-200">
+              <div className="pt-2 space-y-2">
+                {/* Ristrutturazione */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Ristrutturazione</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.ristrutturazione_per_mq}€/m²</span>
+                  <input type="number" value={editableCosts.costo_ristrutturazione} onChange={(e) => handleCostChange('costo_ristrutturazione', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Studio Tecnico */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Studio Tecnico</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.studio_tecnico}€</span>
+                  <input type="number" value={editableCosts.costo_studio_tecnico} onChange={(e) => handleCostChange('costo_studio_tecnico', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Architetto */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Architetto</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.architetto}€</span>
+                  <input type="number" value={editableCosts.costo_architetto} onChange={(e) => handleCostChange('costo_architetto', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Imposte */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Imposte</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.imposte_percentuale}% + {params.imposte_fisso}€</span>
+                  <input type="number" value={editableCosts.costo_imposte} onChange={(e) => handleCostChange('costo_imposte', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Notaio */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Notaio</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.notaio}€</span>
+                  <input type="number" value={editableCosts.costo_notaio} onChange={(e) => handleCostChange('costo_notaio', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Avvocato */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Avvocato</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.avvocato}€</span>
+                  <input type="number" value={editableCosts.costo_avvocato} onChange={(e) => handleCostChange('costo_avvocato', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Agibilità */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Agibilità</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.agibilita}€</span>
+                  <input type="number" value={editableCosts.costo_agibilita} onChange={(e) => handleCostChange('costo_agibilita', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Cambio Destinazione */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Cambio Destinazione</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.cambio_destinazione_uso}€</span>
+                  <input type="number" value={editableCosts.costo_cambio_destinazione} onChange={(e) => handleCostChange('costo_cambio_destinazione', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Agenzia Out */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Agenzia Out</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.agenzia_out_percentuale}%</span>
+                  <input type="number" value={editableCosts.costo_agenzia_out} onChange={(e) => handleCostChange('costo_agenzia_out', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Condominio Risc. */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Condominio Risc.</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.condominio_risc}€</span>
+                  <input type="number" value={editableCosts.costo_condominio_risc} onChange={(e) => handleCostChange('costo_condominio_risc', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Pulizia Cantiere */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Pulizia Cantiere</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.pulizia_cantiere}€</span>
+                  <input type="number" value={editableCosts.costo_pulizia_cantiere} onChange={(e) => handleCostChange('costo_pulizia_cantiere', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Utenze */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Utenze</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.utenze}€</span>
+                  <input type="number" value={editableCosts.costo_utenze} onChange={(e) => handleCostChange('costo_utenze', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Imprevisti */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Imprevisti</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.imprevisti_percentuale}%</span>
+                  <input type="number" value={editableCosts.costo_imprevisti} onChange={(e) => handleCostChange('costo_imprevisti', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+                {/* Altro */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Altro</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">0€</span>
+                  <input type="number" value={editableCosts.costo_altro} onChange={(e) => handleCostChange('costo_altro', parseFloat(e.target.value) || 0)} className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
+              </div>
+
+              <div className="flex justify-between text-sm py-2 border-t-2 border-slate-300 mt-3 pt-3">
+                <span className="font-semibold text-slate-700">Totale Costi (escluso acquisto):</span>
+                <span className="font-semibold">{formatCurrency(calculated.totale_costi_escluso_acquisto)}</span>
+              </div>
+              
+              <div className="flex justify-between text-sm py-2">
+                <span className="font-bold text-blue-700">Prezzo Acquisto:</span>
+                <span className="font-bold text-blue-600 text-lg">{formatCurrency(calculated.prezzo_acquisto)}</span>
+              </div>
+              
+              <div className="flex justify-between text-sm py-2">
+                <span className="font-semibold text-slate-700">Totale Costi:</span>
+                <span className="font-semibold">{formatCurrency(calculated.totale_costi)}</span>
+              </div>
+              
+              <div className="flex justify-between text-sm py-2">
+                <span className="font-semibold text-slate-700">Totale Rivendita:</span>
+                <span className="font-semibold">{formatCurrency(calculated.totale_rivendita)}</span>
+              </div>
+              
+              <div className="flex justify-between text-sm py-2 border-t-2 border-green-200 mt-3 pt-3">
+                <span className="font-bold text-green-700">Utile Lordo:</span>
+                <span className="font-bold text-green-600 text-lg">{formatCurrency(calculated.utile_lordo)}</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-200">
+                <div>
+                  <label className="block text-xs text-slate-600 mb-1">Esposizione (€)</label>
+                  <input type="number" value={editableCosts.esposizione} onChange={(e) => handleCostChange('esposizione', parseFloat(e.target.value) || 0)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-600 mb-1">ROI Target (%)</label>
+                  <input type="number" value={editableCosts.roi_target} onChange={(e) => handleCostChange('roi_target', parseFloat(e.target.value) || 0)} className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                <div>
+                  <span className="block text-xs text-slate-600 mb-1">ROE</span>
+                  <div className="text-sm font-semibold text-blue-600 py-1.5">{calculated.roe?.toFixed(2)}%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Offerta Finale */}
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-3 text-lg">🔨 Offerta Finale</h3>
+            <div className="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center">
+              <div className="text-sm text-slate-600 mb-2">Range Offerta</div>
+              <div className="text-3xl font-bold text-blue-600">
+                {formatCurrency(roundToThousand(calculated.prezzo_acquisto_meno_5))} - {formatCurrency(roundToThousand(calculated.prezzo_acquisto))}
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-4 border-t border-slate-200">
+            <button 
+              onClick={async () => {
+                try {
+                  await saveChanges();
+                  alert('✅ Modifiche salvate con successo!');
+                } catch (error) {
+                  // L'errore è già gestito in saveChanges
+                }
+              }} 
+              disabled={saving} 
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              <Save size={20} />
+              {saving ? 'Salvataggio...' : 'Salva Modifiche'}
+            </button>
+            <button onClick={handleApprove} disabled={saving} className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
+              <Check size={20} />
+              {saving ? 'Approvazione...' : 'Approva'}
+            </button>
+            <button onClick={handleReject} disabled={saving} className="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2">
+              <XCircle size={20} />
+              {saving ? 'Rifiuto...' : 'Rifiuta'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-8 border border-slate-200">
         <div className="flex items-center justify-between p-6 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
