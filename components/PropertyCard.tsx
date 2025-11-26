@@ -34,7 +34,7 @@ export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps)
       className={`bg-white rounded-lg shadow-sm border-l-8 ${statusConfig.border} border-t border-r border-b border-slate-200 p-2 cursor-pointer hover:shadow-md transition-all relative`}
     >
       {/* Griglia fissa per allineamento perfetto tra tutte le card */}
-      <div className="grid items-center gap-2" style={{ gridTemplateColumns: '0.8fr 1.5fr 0.8fr 1fr 0.6fr 1.2fr 1.1fr 0.6fr' }}>
+      <div className="grid items-center gap-2" style={{ gridTemplateColumns: '1.2fr 1.8fr 0.8fr 1fr 0.6fr 1.3fr 0.9fr 0.5fr' }}>
         {/* Cliente */}
         <div>
           <p className="text-xs text-slate-500">Cliente</p>
