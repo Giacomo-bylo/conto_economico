@@ -31,19 +31,28 @@ export default function ParametersPage() {
     setSaving(true);
     setSuccess(false);
 
-    const { error } = await supabase
-      .from('parameters')
-      .update(params)
-      .eq('id', params.id);
+    try {
+      const response = await fetch('/api/parameters', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params),
+      });
 
-    setSaving(false);
-    if (!error) {
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-    } else {
+      const result = await response.json();
+
+      if (response.ok) {
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+      } else {
+        console.error(result.error);
+        alert('Errore salvataggio parametri');
+      }
+    } catch (error) {
       console.error(error);
       alert('Errore salvataggio parametri');
     }
+
+    setSaving(false);
   };
 
   if (!params) {
