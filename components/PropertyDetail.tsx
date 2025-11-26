@@ -117,19 +117,78 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
   }, [localProperty, calculated, onUpdate]);
 
   const handleApprove = useCallback(async () => {
+    if (!confirm('Confermi di voler approvare questa valutazione? Verrà inviata l\'email al cliente.')) return;
+    
+    setSaving(true);
+    
+    // Prima salviamo le modifiche
     await saveChanges();
-    const { error } = await supabase.from('properties').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', localProperty.id);
-    if (!error) {
-      onUpdate({ ...localProperty, status: 'approved' });
-      onClose();
+    
+    try {
+      // Poi chiamiamo l'API che aggiorna lo stato E invia l'email
+      const response = await fetch('/api/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          propertyId: localProperty.id,
+          status: 'approved'
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Errore durante l\'approvazione');
+      }
+
+      if (result.success) {
+        onUpdate(result.data);
+        alert('✅ Valutazione approvata! ' + (result.emailSent ? 'Email inviata al cliente.' : 'Email non inviata (controllare n8n).'));
+        onClose();
+      }
+    } catch (error: any) {
+      console.error('Errore approvazione:', error);
+      alert(`Errore: ${error.message}`);
+    } finally {
+      setSaving(false);
     }
   }, [localProperty, saveChanges, onUpdate, onClose]);
 
   const handleReject = useCallback(async () => {
-    const { error } = await supabase.from('properties').update({ status: 'rejected' }).eq('id', localProperty.id);
-    if (!error) {
-      onUpdate({ ...localProperty, status: 'rejected' });
-      onClose();
+    if (!confirm('Confermi di voler rifiutare questa valutazione? Verrà inviata l\'email al cliente.')) return;
+    
+    setSaving(true);
+    
+    try {
+      const response = await fetch('/api/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          propertyId: localProperty.id,
+          status: 'rejected'
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Errore durante il rifiuto');
+      }
+
+      if (result.success) {
+        onUpdate(result.data);
+        alert('❌ Valutazione rifiutata. ' + (result.emailSent ? 'Email inviata al cliente.' : 'Email non inviata (controllare n8n).'));
+        onClose();
+      }
+    } catch (error: any) {
+      console.error('Errore rifiuto:', error);
+      alert(`Errore: ${error.message}`);
+    } finally {
+      setSaving(false);
     }
   }, [localProperty, onUpdate, onClose]);
 
