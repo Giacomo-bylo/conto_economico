@@ -78,8 +78,8 @@ export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps)
           </div>
         </div>
 
-        {/* Status e Elimina a destra (separati verticalmente) */}
-        <div className="flex flex-col items-end gap-1.5 ml-3 flex-shrink-0">
+        {/* Status e Elimina a destra (sulla stessa riga) */}
+        <div className="flex items-center gap-2 ml-3 flex-shrink-0">
           <div className={`px-3 py-1 rounded-full text-xs font-semibold border-2 ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
             {statusConfig.label}
           </div>
