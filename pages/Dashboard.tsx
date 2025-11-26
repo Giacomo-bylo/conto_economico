@@ -32,13 +32,28 @@ export default function DashboardPage() {
     if (propertiesResult.data) setProperties(propertiesResult.data);
     if (paramsResult.data) setParams(paramsResult.data);
     
-    // Fallback Mock data if Supabase is empty (for demo purpose)
     if ((!propertiesResult.data || propertiesResult.data.length === 0) && !propertiesResult.error) {
-       // Optional: Add mock data here if needed for testing UI without DB
     }
     
     setLoading(false);
   }, []);
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('properties')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting property:', error);
+      alert('Errore durante l\'eliminazione');
+    } else {
+      setProperties(properties.filter(p => p.id !== id));
+      if (selectedProperty?.id === id) {
+        setSelectedProperty(null);
+      }
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -150,6 +165,7 @@ export default function DashboardPage() {
                       key={property.id}
                       property={property}
                       onClick={() => setSelectedProperty(property)}
+                      onDelete={handleDelete}
                     />
                   ))}
                 </div>
