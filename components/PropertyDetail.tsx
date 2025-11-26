@@ -139,8 +139,8 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     <div className="flex items-center gap-3">
       <div className="flex-1">
         <span className="text-sm text-slate-600">{label}</span>
-        <span className="text-xs text-slate-400 ml-2">({baseValue})</span>
       </div>
+      <span className="text-xs text-slate-400 w-32 text-right">{baseValue}</span>
       <input
         type="number"
         value={editableCosts[editableField]}
@@ -186,7 +186,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
           {/* AVM */}
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 text-lg">📊 Valutazioni AVM</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Agent Pricing Min</label>
                 <input type="number" value={localProperty.avm_agent_pricing_min || 0} onChange={(e) => handleFieldChange('avm_agent_pricing_min', parseFloat(e.target.value) || 0)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
@@ -204,23 +204,26 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
                 <input type="number" value={localProperty.avm_immobiliare_insights_max || 0} onChange={(e) => handleFieldChange('avm_immobiliare_insights_max', parseFloat(e.target.value) || 0)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
               </div>
             </div>
+            
+            {/* Prezzo Riferimento e Rivendita */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-blue-50 border-2 border-blue-500 rounded-lg p-4 text-center">
+                <div className="text-sm text-slate-600 mb-1">Prezzo Riferimento</div>
+                <div className="text-2xl font-bold text-blue-600">{formatCurrency(calculated.prezzo_riferimento)}</div>
+              </div>
+              <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4 text-center">
+                <div className="text-sm text-slate-600 mb-1">Prezzo Rivendita</div>
+                <div className="text-2xl font-bold text-green-600">{formatCurrency(calculated.prezzo_rivendita)}</div>
+              </div>
+            </div>
           </div>
 
           {/* CONTO ECONOMICO Unificato */}
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 text-lg">💶 Conto Economico</h3>
             <div className="bg-slate-50 rounded-lg p-4 space-y-3 border border-slate-200">
-              <div className="flex justify-between text-sm py-2 border-b border-slate-200">
-                <span className="text-slate-600">Prezzo Riferimento:</span>
-                <span className="font-semibold">{formatCurrency(calculated.prezzo_riferimento)}</span>
-              </div>
-              <div className="flex justify-between text-sm py-2 border-b border-slate-200">
-                <span className="text-slate-600">Prezzo Rivendita:</span>
-                <span className="font-semibold">{formatCurrency(calculated.prezzo_rivendita)}</span>
-              </div>
-              
               <div className="pt-2 space-y-2">
-                <CostRow label="Ristrutturazione" baseValue={`${params.ristrutturazione_per_mq}€/m² × ${property.superficie_mq}m²`} editableField="costo_ristrutturazione" />
+                <CostRow label="Ristrutturazione" baseValue={`${params.ristrutturazione_per_mq}€/m²`} editableField="costo_ristrutturazione" />
                 <CostRow label="Studio Tecnico" baseValue={`${params.studio_tecnico}€`} editableField="costo_studio_tecnico" />
                 <CostRow label="Architetto" baseValue={`${params.architetto}€`} editableField="costo_architetto" />
                 <CostRow label="Imposte" baseValue={`${params.imposte_percentuale}% + ${params.imposte_fisso}€`} editableField="costo_imposte" />

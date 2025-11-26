@@ -18,11 +18,11 @@ export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps)
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'approved':
-        return { label: 'Approvato', bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200' };
+        return { label: 'Approvato', bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-500' };
       case 'rejected':
-        return { label: 'Rifiutato', bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' };
+        return { label: 'Rifiutato', bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-500' };
       default:
-        return { label: 'In Approvazione', bg: 'bg-yellow-100', text: 'text-yellow-700', border: 'border-yellow-200' };
+        return { label: 'In Approvazione', bg: 'bg-yellow-100', text: 'text-yellow-700', border: 'border-yellow-500' };
     }
   };
 
@@ -31,21 +31,21 @@ export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps)
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 cursor-pointer hover:shadow-md transition-all relative"
+      className={`bg-white rounded-lg shadow-sm border-l-4 ${statusConfig.border} border-t border-r border-b border-slate-200 p-3 cursor-pointer hover:shadow-md transition-all relative`}
     >
-      <div className="flex items-center justify-between mb-3">
-        <div className={`px-2 py-0.5 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
+      <div className="flex items-center justify-between mb-2">
+        <div className={`px-2 py-0.5 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} border-${statusConfig.border}`}>
           {statusConfig.label}
         </div>
         <button
           onClick={handleDelete}
-          className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition-colors"
+          className="px-2 py-0.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition-colors"
         >
           ELIMINA
         </button>
       </div>
 
-      <div className="grid grid-cols-6 gap-3 text-sm">
+      <div className="grid grid-cols-6 gap-2 text-sm">
         <div>
           <p className="text-xs text-slate-500">Cliente</p>
           <p className="font-semibold text-slate-900 text-sm">
