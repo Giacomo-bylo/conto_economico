@@ -8,7 +8,7 @@ interface PropertyCardProps {
   onDelete: (id: string) => void;
 }
 
-export default function PropertyCard({ property, onClick, onDelete }: PropertyCardProps) {
+export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps) {
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (confirm('Sei sicuro di voler eliminare questa valutazione?')) {
