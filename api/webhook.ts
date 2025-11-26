@@ -17,7 +17,6 @@ export default async function handler(
   try {
     const webflowData = req.body.body?.data || req.body;
 
-    // Mappa i campi da Webflow al formato database
     const propertyData = {
       lead_nome: webflowData.Nome,
       lead_cognome: webflowData.Cognome,
@@ -35,7 +34,7 @@ export default async function handler(
       anno_costruzione: webflowData.anno_costruzione,
       piano_immobile: webflowData.piano_immobile,
       ascensore: webflowData.ascensore,
-      raw_json: req.body // Salva anche il payload originale
+      raw_json: req.body
     };
 
     const { data: inserted, error } = await supabase
@@ -55,8 +54,3 @@ export default async function handler(
     return res.status(500).json({ error: error.message });
   }
 }
-```
-
-**Poi in n8n rimetti il body originale:**
-```
-{{ JSON.stringify($json) }}
