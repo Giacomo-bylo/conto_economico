@@ -31,52 +31,52 @@ export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps)
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 cursor-pointer hover:shadow-md transition-all relative"
+      className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 cursor-pointer hover:shadow-md transition-all relative"
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className={`px-3 py-1 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
+      <div className="flex items-center justify-between mb-3">
+        <div className={`px-2 py-0.5 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
           {statusConfig.label}
         </div>
         <button
           onClick={handleDelete}
-          className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition-colors"
+          className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition-colors"
         >
           ELIMINA
         </button>
       </div>
 
-      <div className="grid grid-cols-6 gap-4">
+      <div className="grid grid-cols-6 gap-3 text-sm">
         <div>
-          <p className="text-xs text-slate-500 mb-1">Cliente</p>
-          <p className="font-semibold text-slate-900">
+          <p className="text-xs text-slate-500">Cliente</p>
+          <p className="font-semibold text-slate-900 text-sm">
             {property.lead_nome} {property.lead_cognome}
           </p>
         </div>
         
         <div>
-          <p className="text-xs text-slate-500 mb-1">Indirizzo</p>
-          <p className="font-medium text-slate-900">
+          <p className="text-xs text-slate-500">Indirizzo</p>
+          <p className="font-medium text-slate-900 text-sm">
             {property.indirizzo_completo} {property.numero_civico}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-slate-500 mb-1">Tipologia</p>
-          <p className="font-medium text-slate-900">{property.tipo_immobile || '-'}</p>
+          <p className="text-xs text-slate-500">Tipologia</p>
+          <p className="font-medium text-slate-900 text-sm">{property.tipo_immobile || '-'}</p>
         </div>
 
         <div>
-          <p className="text-xs text-slate-500 mb-1">Condizioni</p>
-          <p className="font-medium text-slate-900">{property.condizioni_immobile || '-'}</p>
+          <p className="text-xs text-slate-500">Condizioni</p>
+          <p className="font-medium text-slate-900 text-sm">{property.condizioni_immobile || '-'}</p>
         </div>
 
         <div>
-          <p className="text-xs text-slate-500 mb-1">Superficie</p>
-          <p className="font-medium text-slate-900">{property.superficie_mq} m²</p>
+          <p className="text-xs text-slate-500">Superficie</p>
+          <p className="font-medium text-slate-900 text-sm">{property.superficie_mq} m²</p>
         </div>
 
         <div>
-          <p className="text-xs text-slate-500 mb-1">Range Acquisto</p>
+          <p className="text-xs text-slate-500">Range Acquisto</p>
           <p className="font-semibold text-blue-600 text-sm">
             {property.prezzo_acquisto_meno_5 && property.prezzo_acquisto 
               ? `€${Math.round(property.prezzo_acquisto_meno_5).toLocaleString()} - €${Math.round(property.prezzo_acquisto).toLocaleString()}`
