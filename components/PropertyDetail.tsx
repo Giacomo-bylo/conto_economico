@@ -208,12 +208,12 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
             {/* Prezzo Riferimento e Rivendita */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-blue-50 border-2 border-blue-500 rounded-lg p-4 text-center">
-                <div className="text-sm text-slate-600 mb-1">Prezzo Riferimento</div>
-                <div className="text-2xl font-bold text-blue-600">{formatCurrency(calculated.prezzo_riferimento)}</div>
+                <div className="text-xs text-slate-600">Prezzo Riferimento</div>
+                <div className="text-xl font-bold text-blue-600">{formatCurrency(calculated.prezzo_riferimento)}</div>
               </div>
               <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4 text-center">
-                <div className="text-sm text-slate-600 mb-1">Prezzo Rivendita</div>
-                <div className="text-2xl font-bold text-green-600">{formatCurrency(calculated.prezzo_rivendita)}</div>
+                <div className="text-xs text-slate-600">Prezzo Rivendita</div>
+                <div className="text-xl font-bold text-green-600">{formatCurrency(calculated.prezzo_rivendita)}</div>
               </div>
             </div>
           </div>
