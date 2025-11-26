@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { NumericFormat } from 'react-number-format';
 import { supabase } from '../services/supabaseClient';
 import { GlobalParameters } from '../types';
 import { Save } from 'lucide-react';
@@ -89,10 +90,11 @@ export default function ParametersPage() {
               ].map((item) => (
                 <div key={item.key}>
                   <label className="block text-sm text-slate-600 mb-1">{item.label}</label>
-                  <input
-                    type="number"
+                  <NumericFormat
                     value={params[item.key as keyof GlobalParameters] as number}
-                    onChange={(e) => handleChange(item.key as keyof GlobalParameters, parseFloat(e.target.value))}
+                    onValueChange={(values) => handleChange(item.key as keyof GlobalParameters, values.floatValue || 0)}
+                    thousandSeparator="."
+                    decimalSeparator=","
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
                   />
                 </div>
@@ -138,10 +140,11 @@ export default function ParametersPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Esposizione Default (€)</label>
-                <input
-                  type="number"
+                <NumericFormat
                   value={params.esposizione_default}
-                  onChange={(e) => handleChange('esposizione_default', parseFloat(e.target.value))}
+                  onValueChange={(values) => handleChange('esposizione_default', values.floatValue || 0)}
+                  thousandSeparator="."
+                  decimalSeparator=","
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
                 />
               </div>
@@ -165,10 +168,11 @@ export default function ParametersPage() {
               </div>
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Imposte Fisso (€)</label>
-                <input
-                  type="number"
+                <NumericFormat
                   value={params.imposte_fisso}
-                  onChange={(e) => handleChange('imposte_fisso', parseFloat(e.target.value))}
+                  onValueChange={(values) => handleChange('imposte_fisso', values.floatValue || 0)}
+                  thousandSeparator="."
+                  decimalSeparator=","
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
                 />
               </div>
