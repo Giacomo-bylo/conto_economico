@@ -279,25 +279,25 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-8 border border-slate-200">
-        <div className="flex items-center justify-between p-6 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 md:p-4 z-50 overflow-y-auto backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-4 md:my-8 border border-slate-200">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-900">
               {localProperty.lead_nome} {localProperty.lead_cognome}
             </h2>
-            <p className="text-slate-600 mt-1">{localProperty.indirizzo_completo} {localProperty.numero_civico}</p>
+            <p className="text-sm md:text-base text-slate-600 mt-1">{localProperty.indirizzo_completo} {localProperty.numero_civico}</p>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition">
             <X size={24} />
           </button>
         </div>
 
-        <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+        <div className="p-4 md:p-6 space-y-6 max-h-[75vh] overflow-y-auto">
           {/* Dati Immobile */}
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 text-lg">🏠 Dati Immobile</h3>
-            <div className="grid grid-cols-5 gap-3 text-sm bg-slate-50 p-4 rounded-lg">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm bg-slate-50 p-4 rounded-lg">
               <div><span className="text-slate-500 text-xs">Tipologia</span><p className="font-medium">{localProperty.tipo_immobile || '-'}</p></div>
               <div><span className="text-slate-500 text-xs">Superficie</span><p className="font-medium">{localProperty.superficie_mq} m²</p></div>
               <div><span className="text-slate-500 text-xs">Locali</span><p className="font-medium">{localProperty.numero_locali || '-'}</p></div>
@@ -314,7 +314,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
           {/* AVM */}
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 text-lg">📊 Valutazioni AVM</h3>
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Agent Pricing Min</label>
                 <NumericFormat
@@ -362,7 +362,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
             </div>
             
             {/* Prezzo Riferimento e Rivendita */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-blue-50 border-2 border-blue-500 rounded-lg p-4 text-center">
                 <div className="text-xs text-slate-600">Prezzo Riferimento</div>
                 <div className="text-xl font-bold text-blue-600">{formatCurrency(calculated.prezzo_riferimento)}</div>
@@ -496,7 +496,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
                 <span className="font-bold text-green-600 text-lg">{formatCurrency(calculated.utile_lordo)}</span>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-200">
                 <div>
                   <label className="block text-xs text-slate-600 mb-1">Esposizione (€)</label>
                   <NumericFormat value={editableCosts.esposizione} onValueChange={(values) => handleCostChange('esposizione', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none" />
@@ -525,7 +525,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-slate-200">
+          <div className="flex flex-col md:flex-row gap-3 pt-4 border-t border-slate-200">
             <button 
               onClick={async () => {
                 try {

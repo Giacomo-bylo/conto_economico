@@ -77,7 +77,7 @@ export default function ParametersPage() {
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
           <div>
             <h3 className="font-semibold text-slate-900 mb-4">💶 Costi Fissi</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 { label: 'Ristrutturazione per mq (€)', key: 'ristrutturazione_per_mq' },
                 { label: 'Studio Tecnico (€)', key: 'studio_tecnico' },
@@ -104,7 +104,7 @@ export default function ParametersPage() {
 
           <div>
             <h3 className="font-semibold text-slate-900 mb-4">📊 Percentuali</h3>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Agenzia In (%)</label>
                 <input
@@ -137,7 +137,7 @@ export default function ParametersPage() {
 
           <div>
             <h3 className="font-semibold text-slate-900 mb-4">🎯 Strategici</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-slate-600 mb-1">Esposizione Default (€)</label>
                 <NumericFormat
