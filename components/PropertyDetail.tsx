@@ -477,21 +477,21 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
               </div>
               
               <div className="flex justify-between text-sm py-2">
-                <span className="font-semibold text-slate-700">Totale Costi:</span>
-                <span className="font-semibold">{formatCurrency(calculated.totale_costi)}</span>
-              </div>
-              
-              <div className="flex justify-between text-sm py-2">
                 <span className="font-bold text-blue-700">Prezzo Acquisto:</span>
                 <span className="font-bold text-blue-600 text-lg">{formatCurrency(calculated.prezzo_acquisto)}</span>
               </div>
               
               <div className="flex justify-between text-sm py-2">
-                <span className="font-semibold text-slate-700">Totale Rivendita:</span>
-                <span className="font-semibold">{formatCurrency(calculated.totale_rivendita)}</span>
+                <span className="font-semibold text-slate-700">Totale Costi:</span>
+                <span className="font-semibold">{formatCurrency(calculated.totale_costi)}</span>
               </div>
               
-              <div className="flex justify-between text-sm py-2 border-t-2 border-green-200 mt-3 pt-3">
+              <div className="flex justify-between text-sm py-2">
+                <span className="font-semibold text-green-700">Prezzo Rivendita:</span>
+                <span className="font-semibold text-green-600">{formatCurrency(calculated.totale_rivendita)}</span>
+              </div>
+              
+              <div className="flex justify-between text-sm py-2 border-t-2 border-green-200 mt-4 pt-4">
                 <span className="font-bold text-green-700">Utile Lordo:</span>
                 <span className="font-bold text-green-600 text-lg">{formatCurrency(calculated.utile_lordo)}</span>
               </div>
