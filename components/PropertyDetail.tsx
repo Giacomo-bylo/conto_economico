@@ -23,6 +23,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     costo_avvocato: property.costo_avvocato ?? params.avvocato,
     costo_agibilita: property.costo_agibilita ?? params.agibilita,
     costo_cambio_destinazione: property.costo_cambio_destinazione ?? params.cambio_destinazione_uso,
+    costo_agenzia_in: property.costo_agenzia_in ?? 0,
     costo_agenzia_out: property.costo_agenzia_out ?? 0,
     costo_condominio_risc: property.costo_condominio_risc ?? params.condominio_risc,
     costo_pulizia_cantiere: property.costo_pulizia_cantiere ?? params.pulizia_cantiere,
@@ -57,6 +58,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
       editableCosts.costo_avvocato +
       editableCosts.costo_agibilita +
       editableCosts.costo_cambio_destinazione +
+      editableCosts.costo_agenzia_in +
       editableCosts.costo_agenzia_out +
       editableCosts.costo_condominio_risc +
       editableCosts.costo_pulizia_cantiere +
@@ -114,6 +116,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
       costo_avvocato: calculated.costo_avvocato,
       costo_agibilita: calculated.costo_agibilita,
       costo_cambio_destinazione: calculated.costo_cambio_destinazione,
+      costo_agenzia_in: calculated.costo_agenzia_in,
       costo_agenzia_out: calculated.costo_agenzia_out,
       costo_condominio_risc: calculated.costo_condominio_risc,
       costo_pulizia_cantiere: calculated.costo_pulizia_cantiere,
@@ -424,6 +427,12 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
                   <span className="text-xs text-slate-400 w-32 text-right">{params.cambio_destinazione_uso}€</span>
                   <NumericFormat value={editableCosts.costo_cambio_destinazione} onValueChange={(values) => handleCostChange('costo_cambio_destinazione', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
+                {/* Agenzia In */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1"><span className="text-sm text-slate-600">Agenzia In</span></div>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.agenzia_in_percentuale}%</span>
+                  <NumericFormat value={editableCosts.costo_agenzia_in} onValueChange={(values) => handleCostChange('costo_agenzia_in', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+                </div>
                 {/* Agenzia Out */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Agenzia Out</span></div>
@@ -468,13 +477,13 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
               </div>
               
               <div className="flex justify-between text-sm py-2">
-                <span className="font-bold text-blue-700">Prezzo Acquisto:</span>
-                <span className="font-bold text-blue-600 text-lg">{formatCurrency(calculated.prezzo_acquisto)}</span>
+                <span className="font-semibold text-slate-700">Totale Costi:</span>
+                <span className="font-semibold">{formatCurrency(calculated.totale_costi)}</span>
               </div>
               
               <div className="flex justify-between text-sm py-2">
-                <span className="font-semibold text-slate-700">Totale Costi:</span>
-                <span className="font-semibold">{formatCurrency(calculated.totale_costi)}</span>
+                <span className="font-bold text-blue-700">Prezzo Acquisto:</span>
+                <span className="font-bold text-blue-600 text-lg">{formatCurrency(calculated.prezzo_acquisto)}</span>
               </div>
               
               <div className="flex justify-between text-sm py-2">
