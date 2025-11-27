@@ -478,7 +478,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
               
               <div className="flex justify-between text-sm py-2">
                 <span className="font-bold text-blue-700">Prezzo Acquisto:</span>
-                <span className="font-bold text-blue-600 text-lg">{formatCurrency(calculated.prezzo_acquisto)}</span>
+                <span className="font-bold text-blue-600">{formatCurrency(calculated.prezzo_acquisto)}</span>
               </div>
               
               <div className="flex justify-between text-sm py-2">
