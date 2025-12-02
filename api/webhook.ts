@@ -158,6 +158,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const propertyData = {
       lead_nome: webflowData.Nome,
+      lead_id: req.body.lead_id || null,
       lead_cognome: webflowData.Cognome,
       lead_email: webflowData.Email,
       lead_telefono: webflowData.Telefono,
