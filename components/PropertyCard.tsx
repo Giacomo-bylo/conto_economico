@@ -77,7 +77,7 @@ export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps)
           <p className="text-xs text-slate-500">Range Acquisto</p>
           <p className="font-semibold text-blue-600 text-sm md:text-xs leading-tight truncate">
             {property.prezzo_acquisto_meno_5 && property.prezzo_acquisto 
-              ? `€${Math.round(property.prezzo_acquisto_meno_5).toLocaleString()} - €${Math.round(property.prezzo_acquisto).toLocaleString()}`
+              ? `€ ${Math.round(property.prezzo_acquisto_meno_5).toLocaleString('it-IT')} - € ${Math.round(property.prezzo_acquisto).toLocaleString('it-IT')}`
               : '-'}
           </p>
         </div>

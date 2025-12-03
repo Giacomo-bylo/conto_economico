@@ -33,6 +33,8 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     esposizione: property.esposizione ?? params.esposizione_default,
     roi_target: property.roi ?? params.roi_target,
   });
+
+  const [offertaDefinitiva, setOffertaDefinitiva] = useState<number | undefined>(property.offerta_definitiva);
   
   const [saving, setSaving] = useState(false);
 
@@ -141,6 +143,9 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
       esposizione: calculated.esposizione,
       roi: calculated.roi_target,
       roe: calculated.roe,
+
+      // Offerta definitiva
+      offerta_definitiva: offertaDefinitiva || null,
     };
 
     console.log('Saving updates:', updates);
@@ -165,7 +170,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     onUpdate(updated);
     console.log('Saved successfully:', data);
     return updated;
-  }, [localProperty, calculated, onUpdate]);
+  }, [localProperty, calculated, offertaDefinitiva, onUpdate]);
 
   const handleApprove = useCallback(async () => {
     if (!confirm('Confermi di voler approvare questa valutazione? Verrà inviata l\'email al cliente.')) return;
@@ -266,7 +271,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
     }
   }, [localProperty, onUpdate, onClose]);
 
-  const formatCurrency = (value: number) => `€${Math.round(value).toLocaleString('it-IT')}`;
+  const formatCurrency = (value: number) => `€ ${Math.round(value).toLocaleString('it-IT')}`;
 
   // Arrotonda alle migliaia: se >= 500, arrotonda su, altrimenti giù
   const roundToThousand = (value: number) => {
@@ -382,49 +387,49 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
                 {/* Ristrutturazione */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Ristrutturazione</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.ristrutturazione_per_mq}€/m²</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.ristrutturazione_per_mq} €/m²</span>
                   <NumericFormat value={editableCosts.costo_ristrutturazione} onValueChange={(values) => handleCostChange('costo_ristrutturazione', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Studio Tecnico */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Studio Tecnico</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.studio_tecnico}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.studio_tecnico} €</span>
                   <NumericFormat value={editableCosts.costo_studio_tecnico} onValueChange={(values) => handleCostChange('costo_studio_tecnico', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Architetto */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Architetto</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.architetto}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.architetto} €</span>
                   <NumericFormat value={editableCosts.costo_architetto} onValueChange={(values) => handleCostChange('costo_architetto', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Imposte */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Imposte</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.imposte_percentuale}% + {params.imposte_fisso}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.imposte_percentuale}% + {params.imposte_fisso} €</span>
                   <NumericFormat value={editableCosts.costo_imposte} onValueChange={(values) => handleCostChange('costo_imposte', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Notaio */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Notaio</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.notaio}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.notaio} €</span>
                   <NumericFormat value={editableCosts.costo_notaio} onValueChange={(values) => handleCostChange('costo_notaio', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Avvocato */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Avvocato</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.avvocato}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.avvocato} €</span>
                   <NumericFormat value={editableCosts.costo_avvocato} onValueChange={(values) => handleCostChange('costo_avvocato', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Agibilità */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Agibilità</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.agibilita}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.agibilita} €</span>
                   <NumericFormat value={editableCosts.costo_agibilita} onValueChange={(values) => handleCostChange('costo_agibilita', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Cambio Destinazione */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Cambio Destinazione</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.cambio_destinazione_uso}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.cambio_destinazione_uso} €</span>
                   <NumericFormat value={editableCosts.costo_cambio_destinazione} onValueChange={(values) => handleCostChange('costo_cambio_destinazione', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Agenzia In */}
@@ -442,19 +447,19 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
                 {/* Condominio Risc. */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Condominio Risc.</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.condominio_risc}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.condominio_risc} €</span>
                   <NumericFormat value={editableCosts.costo_condominio_risc} onValueChange={(values) => handleCostChange('costo_condominio_risc', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Pulizia Cantiere */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Pulizia Cantiere</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.pulizia_cantiere}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.pulizia_cantiere} €</span>
                   <NumericFormat value={editableCosts.costo_pulizia_cantiere} onValueChange={(values) => handleCostChange('costo_pulizia_cantiere', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Utenze */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Utenze</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">{params.utenze}€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">{params.utenze} €</span>
                   <NumericFormat value={editableCosts.costo_utenze} onValueChange={(values) => handleCostChange('costo_utenze', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
                 {/* Imprevisti */}
@@ -466,7 +471,7 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
                 {/* Altro */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1"><span className="text-sm text-slate-600">Altro</span></div>
-                  <span className="text-xs text-slate-400 w-32 text-right">0€</span>
+                  <span className="text-xs text-slate-400 w-32 text-right">0 €</span>
                   <NumericFormat value={editableCosts.costo_altro} onValueChange={(values) => handleCostChange('costo_altro', values.floatValue || 0)} thousandSeparator="." decimalSeparator="," className="w-40 px-3 py-1.5 text-right border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
                 </div>
               </div>
@@ -516,10 +521,27 @@ export function PropertyDetail({ property, params, onClose, onUpdate }: Property
           {/* Offerta Finale */}
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 text-lg">🔨 Offerta Finale</h3>
-            <div className="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center">
-              <div className="text-sm text-slate-600 mb-2">Range Offerta</div>
-              <div className="text-3xl font-bold text-blue-600">
-                {formatCurrency(roundToThousand(calculated.prezzo_acquisto_meno_5))} - {formatCurrency(roundToThousand(calculated.prezzo_acquisto))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Range Offerta */}
+              <div className="bg-blue-50 rounded-lg p-6 border border-blue-200 text-center">
+                <div className="text-sm text-slate-600 mb-2">Range Offerta</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {formatCurrency(roundToThousand(calculated.prezzo_acquisto_meno_5))} - {formatCurrency(roundToThousand(calculated.prezzo_acquisto))}
+                </div>
+              </div>
+              
+              {/* Offerta Definitiva */}
+              <div className="bg-green-50 rounded-lg p-6 border border-green-200 text-center">
+                <div className="text-sm text-slate-600 mb-2">Offerta Definitiva</div>
+                <NumericFormat
+                  value={offertaDefinitiva || ''}
+                  onValueChange={(values) => setOffertaDefinitiva(values.floatValue)}
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  prefix="€ "
+                  placeholder="Inserisci offerta..."
+                  className="w-full text-2xl font-bold text-green-600 text-center bg-transparent border-b-2 border-green-300 focus:border-green-500 outline-none py-1"
+                />
               </div>
             </div>
           </div>

@@ -54,6 +54,8 @@ export interface Property {
   utile_lordo?: number;
   roe?: number;
   
+  offerta_definitiva?: number;
+  
   status: 'pending' | 'approved' | 'rejected';
   approved_at?: string;
   approved_by?: string;
