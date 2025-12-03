@@ -86,7 +86,7 @@ export function PropertyCard({ property, onClick, onDelete }: PropertyCardProps)
         <div className="flex flex-row items-center justify-between gap-2 md:contents">
           {/* Status - centrato su desktop */}
           <div className="md:flex md:justify-center">
-            <div className={`px-3 py-1 rounded-full text-xs font-semibold border-2 ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} whitespace-nowrap`}>
+            <div className={`px-3 py-1 rounded-full text-xs font-semibold border-2 ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} whitespace-nowrap min-w-[100px] text-center`}>
               {statusConfig.label}
             </div>
           </div>
